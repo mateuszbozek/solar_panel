@@ -6,15 +6,19 @@ class PositionMountsAndJointsService
 
     def call
       joints = []
+      mounts = []
       @panel_position.each_with_index do |row, row_index|
         p "Dane panele w rzędzie #{row_index}  => #{row[1]}"
         size_of_row = row[1].size
         index = 0
 
         while index < size_of_row-1 do
+
+          
+
           act_panel = row[1][index]
           next_panel = row[1][index+1]
-          is_under_act_panel = false # poprzednie is_under_act_panel
+          is_under_act_panel = false
           is_diagonally_to_act_panel = false 
           gap_on_horizontal = (next_panel[:x]-(act_panel[:x]+Panel::WIDTH)).abs
           gap_on_vertical = nil
@@ -68,6 +72,8 @@ class PositionMountsAndJointsService
           # p joints
           index = index + 1
         end
+
+
       end
       p joints.flatten.size
       return joints.flatten
