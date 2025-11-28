@@ -1,8 +1,8 @@
 class PositionMountsAndJointsService
 
-    def initialize(panel_position)
-     @panel_position = convert_table(panel_position)
-     @x_vertical
+    def initialize(panel_positions)
+     @panel_positions = convert_table(panel_positions)
+     @x_max = @panel_positions.values.flatten.max_by { |p| p[:x] }[:x]
     end
 
     def call
@@ -11,7 +11,7 @@ class PositionMountsAndJointsService
       panel = Panel.allocate
       right_panel = Panel.allocate
 
-      @panel_position.each_with_index do |row, row_index|
+      @panel_positions.each_with_index do |row, row_index|
         size_of_row = row[1].size
         index = 0
 
@@ -22,9 +22,9 @@ class PositionMountsAndJointsService
 
           gap_on_horizontal = (right_panel.x-(panel.x+Panel::WIDTH)).abs
           gap_on_vertical = nil
-          is_last_row = @panel_position[row_index+2].nil?
+          is_last_row = @panel_positions[row_index+2].nil?
           
-          panels_under_act_panel = @panel_position[row_index + 2]&.select do |point|
+          panels_under_act_panel = @panel_positions[row_index + 2]&.select do |point|
             point[:x].between?(panel.x, panel.x+Panel::WIDTH+1)
           end
                         
@@ -58,6 +58,7 @@ class PositionMountsAndJointsService
         p "miejsce na ostatni element"
       end
 
+      p "Ilość punktów joints: #{joints.flatten.size}"
       return {"Joints": joints.flatten, "Mounts": mounts.flatten }
     end
 
