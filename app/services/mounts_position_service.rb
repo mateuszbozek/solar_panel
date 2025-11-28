@@ -19,7 +19,6 @@ class MountsPositionService
         mounts << {x: x_ver, y: @panel.y+Panel::HEIGHT }
       end
     end
-    
-    mounts
+    return mounts
   end
 end

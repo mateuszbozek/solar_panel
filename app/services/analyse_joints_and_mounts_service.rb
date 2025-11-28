@@ -1,8 +1,8 @@
-class PositionMountsAndJointsService
+class AnalyseJointsAndMountsService
   include CalculateNeighbors
 
   def initialize(panel_positions)
-    @panel_positions = convert_table(panel_positions)
+    @panel_positions = group_data_by_x(panel_positions)
   end
 
   def call
@@ -27,9 +27,7 @@ class PositionMountsAndJointsService
         gap_on_vertical = nil
         is_last_row = @panel_positions[row_index+2].nil?
           
-        panels_under_act_panel = @panel_positions[row_index + 2]&.select do |point|
-          point[:x].between?(panel.x, panel.x+Panel::WIDTH+1)
-        end
+        panels_under_act_panel = find_under_panel(@panel_positions[row_index+2],panel)
                         
         case panels_under_act_panel&.size
         when 1
@@ -51,21 +49,25 @@ class PositionMountsAndJointsService
         end
           
         mounts << MountsPositionService.new(panel, x_max).call
-
-        joints << Joint.calculate_joints( gap_on_horizontal, gap_on_vertical, panel )
+        joints << JointsPositionService.new(gap_on_horizontal, gap_on_vertical, panel).call
 
         index = index + 1
       end
 
       panel.send(:initialize, row[1][index])
+      panels_under_act_panel = find_under_panel(@panel_positions[row_index+2],panel)
+     
+      panel.check_under(panels_under_act_panel[0]) unless panels_under_act_panel.nil?
       mounts << MountsPositionService.new(panel, x_max).call
     end
+
     mounts = CalculateNeighbors::merge_neighbors_by_y(mounts.flatten)
 
-    return {"Joints": joints.flatten, "Mounts": mounts.flatten }
+    p temp_method(mounts)
+    return { "Joints": joints.flatten, "Mounts": mounts.flatten }
   end
 
-  def convert_table(array)
+  def group_data_by_x(array)
     grouped_positions = {}
     grouped = array.group_by { |p| p[:y] }
                    .transform_values { |group| group.sort_by { |p| p[:x] } }
@@ -74,5 +76,16 @@ class PositionMountsAndJointsService
     end
     grouped_positions
   end
+  
+  def find_under_panel(collection, panel)
+    collection&.select do |point|
+        point[:x].between?(panel.x, panel.x+Panel::WIDTH+1)
+    end
+  end
 
+  def temp_method(mounts)
+    grouped = mounts.group_by { |p| p[:y] }
+                    .transform_values { |group| group.sort_by { |p| p[:x] } }
+
+  end
 end
