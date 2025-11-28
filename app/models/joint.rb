@@ -6,7 +6,7 @@ class Joint
     @y = Float(y)
   end
 
-    def self.calculate_joints( gap_on_horizontal, gap_on_vertical, is_last_row, panel)
+    def self.calculate_joints( gap_on_horizontal, gap_on_vertical, panel)
       is_under = ( panel.is_under || panel.is_diagonally )
       if panel.is_right && !is_under
         return [ { x: panel.x+Panel::WIDTH+(gap_on_horizontal/2), y: panel.y },

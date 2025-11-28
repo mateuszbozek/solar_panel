@@ -7,7 +7,10 @@ class Panel
                 :y, 
                 :is_under, 
                 :is_diagonally, 
-                :is_right
+                :is_right,
+                :gap_on_horizonal
+                :gap_on_vertical
+
       
   def initialize(panel)
     @x = Float(panel[:x])
@@ -15,7 +18,8 @@ class Panel
     @is_diagonally = false
     @is_right = false
     @is_under = false
-
+    @gap_on_horizonal = nil
+    @gap_on_vertical = nil
   end
 
   def check_on_right(other_panel)
