@@ -13,8 +13,10 @@ class Panel
     @is_right = false
   end
 
-  def is_right
-    @is_right = next_panel[:x]-(panel.x+Panel::WIDTH) < 1
+  def is_on_right(other_panel)
+    @is_right = (other_panel.x - (self.x + WIDTH)).abs < MAX_DISTANCE
   end
 
+  def check_is_under
+  end
 end

@@ -1,10 +1,11 @@
 class Rafter
   START_STEP = 2.freeze
-  EDGE_GAP = 2.frezee
+  EDGE_GAP = 2.freeze
   VERTICAL_GAP = 16.freeze
-  SPAN_GAP = 48.freeze
+  
+  attr_accessor :verticals
 
   def initialize(max)
-    @x = (START_STEP..max+VERTICAL_GAP).step(GAP_VERTICAL).to_a
+    @verticals = (START_STEP..max+VERTICAL_GAP).step(VERTICAL_GAP).to_a
   end
 end
