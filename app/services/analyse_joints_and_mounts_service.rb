@@ -62,8 +62,7 @@ class AnalyseJointsAndMountsService
     end
 
     mounts = CalculateNeighbors::merge_neighbors_by_y(mounts.flatten)
-
-    p temp_method(mounts)
+    mounts = temp_method(mounts)
     return { "Joints": joints.flatten, "Mounts": mounts.flatten }
   end
 
@@ -86,6 +85,40 @@ class AnalyseJointsAndMountsService
   def temp_method(mounts)
     grouped = mounts.group_by { |p| p[:y] }
                     .transform_values { |group| group.sort_by { |p| p[:x] } }
-
+    result = []
+    grouped.each do |row|
+      result << select_points_with_deltas(row[1])
+    end
+    result
   end
+
+
+  def select_points_with_deltas(points, epsilon = 1e-6)
+    deltas = [Mount::SPAN_GAP, Mount::SPAN_GAP-Mount::GAP_VERTICAL, Mount::SPAN_GAP-Mount::GAP_VERTICAL*2]
+
+    pts = points.sort_by { |p| p[:x] }
+    result = []
+    i = 0
+
+    while i < pts.length
+      current = pts[i]
+      result << current
+
+      next_index = nil
+      deltas.each do |d|
+        j = (i + 1).upto(pts.length - 1).find do |k|
+          (pts[k][:x] - (current[:x] + d)).abs <= epsilon
+        end
+        if j
+          next_index = j
+          break
+        end
+      end
+
+      next_index ? i = next_index : i += 1
+    end
+  result
+end
+
+
 end
