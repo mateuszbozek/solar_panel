@@ -29,23 +29,21 @@ You need ruby version 3.3.5 and rails version 7.2.3.
 7. Project has only one endpoint for calculating positions of mounts and joints of solar panel.
    You can test it using Postman or any other API testing tool.
 
-   Application calculate the coordinates for mounts and joints of solar panel. Every panel is described by 2 points:
+   Application calculate the coordinates for mounts and joints of solar panel. Every panel is described by 2 points (top-left corner):
    {x: 1,y: 2}
 
    For running calculation, make a POST request to the following URL:
    http://localhost:3000/get_coordinates_joints_and_mounts
 
-   With the following example of JSON body:
+   with the following example of JSON body which contains all panels coordinates:
    { 
      "data": [ 
         {"x": 0, "y": 0},
         {"x": 20, "y": 0},
         {"x": 40, "y": 0},
-        {"x": 0, "y": 71.6},
-        {"x": 135.15, "y": 0},
-        {"x": 135.15, "y": 71.6}  ]
+        {"x": 0, "y": 30},
+        {"x": 60, "y": 0},
+        {"x": 20, "y": 30}  ]
     }
 
-   You should receive a JSON response with calculated positions for mounts and joints. 
-
-
+   You will receive a JSON response with calculated positions for mounts and joints. 
